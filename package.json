@@ -6,6 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build-api-tools": "ng build ngx-api-tools",
+    "watch-build-api-tools": "ng build ngx-api-tools --watch",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

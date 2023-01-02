@@ -6,20 +6,16 @@ import { APIContext } from "../interfaces/backend-context.interface";
 
 declare const _APICTX_: APIContext;
 export const APICTX: InjectionToken<APIContext> = new InjectionToken<APIContext>(
-    'API Context',
-    {
-        factory: () => {
-            return {
-                api: {
-                    host: 'localhost',
-                    path: 'api',
-                    protocol: 'http'
-                }
-            }
-        }
-
-    }
-);
+  'API', {
+    providedIn: 'root',
+    factory: () => ({
+      api: {
+        protocol: 'http',
+          host: 'localhost',
+          path: 'api'
+      }
+    })
+  });
 
 
 @Injectable()
