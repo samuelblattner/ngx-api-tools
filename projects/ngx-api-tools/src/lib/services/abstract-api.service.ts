@@ -60,7 +60,7 @@ export abstract class AbstractApiService {
         if (!comps || comps.length === 0) {
             return baseUrl;
         }
-        const lastComp = comps[comps.length - 1];
+        const lastComp = comps[comps.length - 1].toString();
         const isFileUrl = lastComp.indexOf('.') >= 0;
         const hasEndSlash = lastComp[lastComp.length - 1] === '/';
         return new URL(
