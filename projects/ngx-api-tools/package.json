@@ -1,10 +1,14 @@
 {
-  "name": "ngx-api-tools",
+  "name": "@samuelblattner/ngx-api-tools",
   "author": "Samuel Blattner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "peerDependencies": {
     "@angular/common": "^15.0.4",
     "@angular/core": "^15.0.4"
+  },
+  "repository": "https://github.com/samuelblattner/ngx-api-tools.git",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "tslib": "^2.3.0"
