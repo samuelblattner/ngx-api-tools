@@ -118,11 +118,11 @@ export abstract class AbstractModelApiService
     }
 
     public getNextPage<MD extends GenericModelData, FLTR extends object>(response: RichPaginatedResponse<MD, FLTR>): Observable<RichPaginatedResponse<MD, FLTR>> {
-        return this.listInstances<MD, FLTR>(response.modelName, response.fltr, response.current + 1, response.modelDomain);
+        return this.listInstances<MD, FLTR>(response.modelName, response.fltr, (response.current || 1) + 1, response.modelDomain);
     }
 
     public getPreviousPage<MD extends GenericModelData, FLTR extends object>(response: RichPaginatedResponse<MD, FLTR>): Observable<RichPaginatedResponse<MD, FLTR>> {
-        return this.listInstances<MD, FLTR>(response.modelName, response.fltr, response.current - 1, response.modelDomain);
+        return this.listInstances<MD, FLTR>(response.modelName, response.fltr, (response.current || 1) - 1, response.modelDomain);
     }
 
     public getInstance<MD extends GenericModelData>(modelName: string, modelId: string, modelDomain?: string): Observable<MD> {
