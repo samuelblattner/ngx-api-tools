@@ -1,10 +1,12 @@
-import { forkJoin, Observable, throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 
 import { HttpParams } from "@angular/common/http";
+
 import { AbstractApiService } from "./abstract-api.service";
 import { GenericModelData } from "../interfaces/model.interface";
 import { RichPaginatedResponse } from "../interfaces/response.interface";
+import { UploadTuple } from "../interfaces/upload-tuple.interface";
 
 
 interface BackendError {
@@ -71,7 +73,7 @@ export abstract class AbstractModelApiService
         );
     }
 
-    public setFilterParams(fltr?: {[key: string]: any}, params?: HttpParams): HttpParams {
+    public setFilterParams(fltr?: { [key: string]: any }, params?: HttpParams): HttpParams {
         params = params || new HttpParams();
         if (!fltr) {
             return params;
@@ -82,7 +84,9 @@ export abstract class AbstractModelApiService
         return params;
     }
 
-    public listInstances<MD extends GenericModelData, FLTR extends {[key: string]: any}>(modelName: string, fltr?: FLTR, page: number = 1, modelDomain?: string): Observable<RichPaginatedResponse<MD, FLTR>> {
+    public listInstances<MD extends GenericModelData, FLTR extends {
+        [key: string]: any
+    }>(modelName: string, fltr?: FLTR, page: number = 1, modelDomain?: string): Observable<RichPaginatedResponse<MD, FLTR>> {
         let params: HttpParams = this.setFilterParams(fltr);
         params = params.set(this.getPageParamName(), page);
         return this.http.get<RichPaginatedResponse<MD, FLTR>>(
@@ -159,6 +163,32 @@ export abstract class AbstractModelApiService
         );
     }
 
+    public uploadInstanceContentFromFile<MD extends {
+        id?: number
+    }>(modelName: string, instance: MD, file: File): Observable<UploadTuple<MD>> {
+
+        const form: FormData = new FormData();
+        form.append(file.name, file);
+        return this.http.post<MD>(
+            this.createInstanceManagementAPIUrl(modelName, undefined, instance.id),
+            form,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'x-requested-with': 'XMLHttpRequest',
+                    ...this.createHeaders()
+                },
+                reportProgress: true,
+                observe: 'events'
+            }
+        ).pipe(
+            map(r => ({instance: r.type === 4 ? r.body : instance, progress: r, done: r.type === 4})),
+            catchError(e => {
+                return throwError(() => <BackendError>e.error)
+            }));
+
+    }
+
     public updateInstance<MD extends GenericModelData>(modelName: string, data: GenericModelData, modelDomain?: string) {
         const idField: keyof GenericModelData = this.getBackendModelInstanceIDFieldName();
         return this.http.patch<MD>(
@@ -175,7 +205,7 @@ export abstract class AbstractModelApiService
 
     public deleteInstance<MD extends GenericModelData>(modelName: string, data: GenericModelData, modelDomain?: string) {
         const idField: keyof GenericModelData = this.getBackendModelInstanceIDFieldName();
-        const body: {[key: string]: any} = {};
+        const body: { [key: string]: any } = {};
         body[idField] = data[idField];
         return this.http.delete<MD>(
             this.createInstanceManagementAPIUrl(modelName),
