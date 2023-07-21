@@ -211,7 +211,13 @@ export abstract class AbstractModelApiService
             this.createInstanceManagementAPIUrl(modelName),
             {
                 body: body
-            }
+            },
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    ...this.createHeaders()
+                },
+            }            
         )
     }
 }
