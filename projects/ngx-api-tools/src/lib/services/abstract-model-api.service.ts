@@ -210,14 +210,12 @@ export abstract class AbstractModelApiService
         return this.http.delete<MD>(
             this.createInstanceManagementAPIUrl(modelName),
             {
-                body: body
-            },
-            {
+                body: body,
                 headers: {
                     'Accept': 'application/json',
                     ...this.createHeaders()
-                },
-            }            
+                }
+            }
         )
     }
 }
